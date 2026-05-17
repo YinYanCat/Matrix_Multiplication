@@ -3,10 +3,12 @@
 #include <vector>
 #include <cstddef>
 
+
 class MatrixView;
 
 class Matrix {
-public:
+
+    public:
     Matrix(std::size_t r, std::size_t c) 
         : cols_(c), rows_(r), data_(c*r) {}
     
@@ -28,14 +30,14 @@ public:
         return *this;
     }
 
-    Matrix operator+(const Matrix& b){
+    Matrix operator+(const Matrix& a) const {
         Matrix result = *this;
-        result += b;
+        result += a;
         return result;
     }
 
     MatrixView view(std::size_t rows = 0, std::size_t cols = 0, std::size_t row_offset = 0, std::size_t col_offset = 0) {
-        
+
         if (rows == 0) rows = rows_;
         if (cols == 0) cols = cols_;
 
@@ -48,14 +50,18 @@ public:
         );
     }
 
-private:
+    private:
+    
     std::size_t cols_;
     std::size_t rows_;
     std::vector<double> data_;
+
 };
 
+
 class MatrixView {
-public:
+
+    public:
     MatrixView(Matrix* m, std::size_t r, std::size_t c, std::size_t ro = 0, std::size_t co = 0)
         : m(m), rows_(r), cols_(c), row_offset(ro), col_offset(co) {}
 
@@ -70,9 +76,8 @@ public:
         return (*m)(row_offset + r, col_offset + c);
     }
 
-
-
     Matrix operator+(const MatrixView& a) const{
+        
         Matrix result(rows_, cols_);
 
         for(std::size_t i = 0; i < rows_; i++){
@@ -84,8 +89,21 @@ public:
         return result;
     }
 
-    MatrixView subview(std::size_t rows = 0, std::size_t cols = 0, std::size_t row_offset = 0, std::size_t col_offset = 0) {
+    Matrix operator-(const MatrixView& a) const{
         
+        Matrix result(rows_, cols_);
+
+        for(std::size_t i = 0; i < rows_; i++){
+            for(std::size_t j = 0; j < cols_; j++){
+                result(i,j) = (*this)(i,j) - a(i,j);
+            }
+        }
+
+        return result;
+    }
+
+    MatrixView subview(std::size_t rows = 0, std::size_t cols = 0, std::size_t row_offset = 0, std::size_t col_offset = 0) {
+
         if (rows == 0) rows = rows_;
         if (cols == 0) cols = cols_;
 
@@ -97,11 +115,13 @@ public:
                 this->col_offset + col_offset
         );
     }
-
-private:
+    
+    private:
+    
     Matrix* m;
     std::size_t rows_;
     std::size_t cols_;
     std::size_t row_offset;
     std::size_t col_offset;
+
 };

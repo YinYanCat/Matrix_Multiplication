@@ -2,8 +2,8 @@
 
 #include "./matrix.cpp"
 
-Matrix StrassenMultiply(Matrix a, Matrix b){
-    Strassen(a.view(), b.view());
+Matrix StrassenMultiply(Matrix& a, Matrix& b){
+    return Strassen(a.view(), b.view());
 }
 
 Matrix Strassen(MatrixView a, MatrixView b){
@@ -13,30 +13,95 @@ Matrix Strassen(MatrixView a, MatrixView b){
     }
 
     if (a.cols() == 1 && a.rows() == 1 && b.cols() == 1 && b.rows() == 1) {
-        Matrix result(1,1);
-        result(0,0) = a(0,0) * b(0,0);
-        return result;
+        Matrix c(1,1);
+        c(0,0) = a(0,0) * b(0,0);
+        return c;
     }
 
-    Matrix result = Matrix(a.rows(), b.cols());
+    Matrix c = Matrix(a.rows(), b.cols());
+    
+    Matrix M1 = Strassen(
+        (
+            a.subview(a.rows()/2, a.cols()/2) +                             //A11
+            a.subview(a.rows()/2, a.cols()/2, a.rows()/2, a.cols()/2)       //A22
+        ).view(),
+        (
+            b.subview(b.rows()/2, b.cols()/2) +                             //B11
+            b.subview(b.rows()/2, b.cols()/2, b.rows()/2, b.cols()/2)       //B22
+        ).view()
+    );
 
-    Matrix M1 = Matrix(a.rows()/2, b.cols()/2);
-    Matrix M2 = Matrix(a.rows()/2, b.cols()/2);
-    Matrix M3 = Matrix(a.rows()/2, b.cols()/2);
-    Matrix M4 = Matrix(a.rows()/2, b.cols()/2);
-    Matrix M5 = Matrix(a.rows()/2, b.cols()/2);
-    Matrix M6 = Matrix(a.rows()/2, b.cols()/2);
-    Matrix M7 = Matrix(a.rows()/2, b.cols()/2);
-    
-    M1 = StrassenMultiply((a.subview(a.rows()/2, a.cols()/2) + a.subview(a.rows()/2, a.cols()/2, a.rows()/2, a.cols()/2)), b.subview(b.rows()/2, b.cols()/2) + b.subview(b.rows()/2, b.cols()/2, b.rows()/2, b.cols()/2));
-    
-    for (std::size_t i = 0; i < a.rows(); i++) {
-        for (std::size_t j = 0; j < b.cols(); j++) {
-            for (std::size_t k = 0; k < a.cols(); k++) {
-                result(i,j) += a(i,k) * b(k,j);
-            }
+    Matrix M2 = Strassen(
+        (
+            a.subview(a.rows()/2, a.cols()/2, a.rows()/2) +                 //A21
+            a.subview(a.rows()/2, a.cols()/2, a.rows()/2, a.cols()/2)       //A22
+        ).view(), 
+        (
+            b.subview(b.rows()/2, b.cols()/2)
+        )
+    );
+
+    Matrix M3 = Strassen(
+        (
+            a.subview(a.rows()/2, a.cols()/2)                               //A11
+            
+        ),
+        (
+            b.subview(b.rows()/2, b.cols()/2, 0, b.cols()/2) -              //B12
+            b.subview(b.rows()/2, b.cols()/2, b.rows()/2, b.cols()/2)       //B22
+        ).view()
+    );
+
+    Matrix M4 = Strassen(
+        (
+            a.subview(a.rows()/2, a.cols()/2, a.rows()/2, a.cols()/2)       //A22
+        ),
+        (
+            b.subview(b.rows()/2, b.cols()/2, b.rows()/2) -                 //B21
+            b.subview(b.rows()/2, b.cols()/2)                               //B11
+        ).view()
+    );
+
+    Matrix M5 = Strassen(
+        (
+            a.subview(a.rows()/2, a.cols()/2) +                             //A11
+            a.subview(a.rows()/2, a.cols()/2, 0, a.cols()/2)                //A12
+        ).view(),
+        (
+            b.subview(b.rows()/2, b.cols()/2, b.rows()/2, b.cols()/2)       //B22
+        )
+    );
+    Matrix M6 = Strassen(
+        (
+            a.subview(a.rows()/2, a.cols()/2, a.rows()/2) -                 //A21
+            a.subview(a.rows()/2, a.cols()/2)                               //A11
+        ).view(),
+        (
+            b.subview(b.rows()/2, b.cols()/2) +                             //B11
+            b.subview(b.rows()/2, b.cols()/2, 0, b.cols()/2)                //B12
+        ).view()
+    );
+    Matrix qM7 = Strassen(
+        (
+            a.subview(a.rows()/2, a.cols()/2, 0, a.cols()/2) -              //A12
+            a.subview(a.rows()/2, a.cols()/2, a.rows()/2, a.cols()/2)       //A22
+        ).view(),
+        (
+            b.subview(b.rows()/2, b.cols()/2, b.rows()/2) +                 //B21
+            b.subview(b.rows()/2, b.cols()/2, b.rows()/2, b.cols()/2)       //B22
+        ).view()
+    );
+
+    MatrixView C11 = c.view(c.rows()/2, c.cols()/2);
+    MatrixView C12 = c.view(c.rows()/2, c.cols()/2, 0, c.cols()/2);
+    MatrixView C21 = c.view(c.rows()/2, c.cols()/2, c.rows()/2);
+    MatrixView C22 = c.view(c.rows()/2, c.cols()/2, c.rows()/2, c.cols()/2);
+
+    for (std::size_t i = 0; i < c.rows()/2; i++){
+        for (std::size_t j = 0; j < c.cols()/2; j++){
+        
         }
     }
     
-    return result;
+    return c;
 }
