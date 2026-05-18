@@ -30,9 +30,22 @@ class Matrix {
         return *this;
     }
 
+    Matrix& operator-=(const Matrix& a)  {
+        for (std::size_t i = 0; i<data_.size(); i++){
+            data_[i] -= a.data_[i];
+        }
+        return *this;
+    }
+
     Matrix operator+(const Matrix& a) const {
         Matrix result = *this;
         result += a;
+        return result;
+    }
+
+    Matrix operator-(const Matrix& a) const {
+        Matrix result = *this;
+        result -= a;
         return result;
     }
 
@@ -100,6 +113,14 @@ class MatrixView {
         }
 
         return result;
+    }
+
+    void assign(const Matrix& a) {
+        for(std::size_t i = 0; i < rows_; i++) {
+            for(std::size_t j = 0; j < cols_; j++) {
+                (*this)(i,j) = a(i,j);
+            }
+        }
     }
 
     MatrixView subview(std::size_t rows = 0, std::size_t cols = 0, std::size_t row_offset = 0, std::size_t col_offset = 0) {

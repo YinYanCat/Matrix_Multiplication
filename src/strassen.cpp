@@ -81,7 +81,7 @@ Matrix Strassen(MatrixView a, MatrixView b){
             b.subview(b.rows()/2, b.cols()/2, 0, b.cols()/2)                //B12
         ).view()
     );
-    Matrix qM7 = Strassen(
+    Matrix M7 = Strassen(
         (
             a.subview(a.rows()/2, a.cols()/2, 0, a.cols()/2) -              //A12
             a.subview(a.rows()/2, a.cols()/2, a.rows()/2, a.cols()/2)       //A22
@@ -97,11 +97,10 @@ Matrix Strassen(MatrixView a, MatrixView b){
     MatrixView C21 = c.view(c.rows()/2, c.cols()/2, c.rows()/2);
     MatrixView C22 = c.view(c.rows()/2, c.cols()/2, c.rows()/2, c.cols()/2);
 
-    for (std::size_t i = 0; i < c.rows()/2; i++){
-        for (std::size_t j = 0; j < c.cols()/2; j++){
-        
-        }
-    }
+    C11.assign(M1 + M4 + M7 - M5);
+    C12.assign(M3 + M5);
+    C21.assign(M2 + M4);
+    C22.assign(M1 - M2 + M3 + M6);
     
     return c;
 }
