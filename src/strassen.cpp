@@ -2,14 +2,11 @@
 
 #include "./matrix.cpp"
 
-Matrix StrassenMultiply(Matrix& a, Matrix& b){
-    return Strassen(a.view(), b.view());
-}
 
 Matrix Strassen(MatrixView a, MatrixView b){
     
     if (a.cols() != b.rows()) {
-        return;
+        return Matrix(1,1);
     }
 
     if (a.cols() == 1 && a.rows() == 1 && b.cols() == 1 && b.rows() == 1) {
@@ -103,4 +100,8 @@ Matrix Strassen(MatrixView a, MatrixView b){
     C22.assign(M1 - M2 + M3 + M6);
     
     return c;
+}
+
+Matrix StrassenMultiply(Matrix& a, Matrix& b){
+    return Strassen(a.view(), b.view());
 }

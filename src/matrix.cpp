@@ -49,19 +49,7 @@ class Matrix {
         return result;
     }
 
-    MatrixView view(std::size_t rows = 0, std::size_t cols = 0, std::size_t row_offset = 0, std::size_t col_offset = 0) {
-
-        if (rows == 0) rows = rows_;
-        if (cols == 0) cols = cols_;
-
-        return MatrixView(
-                this,
-                rows,
-                cols,
-                row_offset,
-                col_offset
-        );
-    }
+    MatrixView view(std::size_t rows = 0, std::size_t cols = 0, std::size_t row_offset = 0, std::size_t col_offset = 0);
 
     private:
     
@@ -146,3 +134,17 @@ class MatrixView {
     std::size_t col_offset;
 
 };
+
+    MatrixView Matrix::view(std::size_t rows, std::size_t cols, std::size_t row_offset, std::size_t col_offset) {
+
+        if (rows == 0) rows = rows_;
+        if (cols == 0) cols = cols_;
+
+        return MatrixView(
+                this,
+                rows,
+                cols,
+                row_offset,
+                col_offset
+        );
+    }
