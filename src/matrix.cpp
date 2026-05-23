@@ -1,7 +1,10 @@
 #include <vector>
 #include <cstddef>
 #include <stdexcept>
+#include <string>
+#include <fstream>
 
+template<typename T>
 class Matrix {
 
     public:
@@ -12,12 +15,31 @@ class Matrix {
     std::size_t cols() const { return cols_; }
     std::size_t rows() const { return rows_; }
 
-    double& operator()(std::size_t r, std::size_t c) {
+    T& operator()(std::size_t r, std::size_t c) {
         return data_[r * cols_ + c];
     }
 
-    double operator()(std::size_t r, std::size_t c) const {
+    T operator()(std::size_t r, std::size_t c) const {
         return data_[r * cols_ + c];
+    }
+
+    void saveBin(const std::string& filename) const {
+        std::ofstream out(filename, std::ios::binary);
+        out.write(reinterpret_cast<const char*>(&rows_), sizeof(rows_));
+        out.write(reinterpret_cast<const char*>(&cols_), sizeof(cols_));
+        out.write(reinterpret_cast<const char*>(data_.data()), data_.size() * sizeof(T));
+    }
+
+    static Matrix loadBin(const std::string& filename) {
+        std::ifstream in(filename, std::ios::binary);
+        std::size_t r;
+        std::size_t c;
+        in.read(reinterpret_cast<char*>(&r), sizeof(r));
+        in.read(reinterpret_cast<char*>(&c), sizeof(c));
+        Matrix m(r,c);
+        in.read(reinterpret_cast<char*>(m.data_.data()), m.data_.size() * sizeof(T));
+
+        return m;
     }
 
     // TODO
@@ -34,7 +56,7 @@ class Matrix {
     
     std::size_t cols_;
     std::size_t rows_;
-    std::vector<double> data_;
+    std::vector<T> data_;
 
     class MatrixView {
 
@@ -45,11 +67,11 @@ class Matrix {
         std::size_t cols() const { return cols_; }
         std::size_t rows() const { return rows_; }
 
-        double& operator()(std::size_t r, std::size_t c) {
+        T& operator()(std::size_t r, std::size_t c) {
             return (*m)(row_offset + r, col_offset + c);
         }
 
-        double operator()(std::size_t r, std::size_t c) const {
+        T operator()(std::size_t r, std::size_t c) const {
             return (*m)(row_offset + r, col_offset + c);
         }
 
@@ -69,8 +91,8 @@ class Matrix {
             }
         }
 
-        Matrix operator+(const MatrixView& a) const { return add(*this, a, std::plus<double>()); }
-        Matrix operator-(const MatrixView& a) const { return add(*this, a, std::minus<double>()); }
+        Matrix operator+(const MatrixView& a) const { return add(*this, a, std::plus<T>()); }
+        Matrix operator-(const MatrixView& a) const { return add(*this, a, std::minus<T>()); }
 
         void copy(const MatrixView& a) {
             for (std::size_t i = 0; i < rows_; i++) {
