@@ -46,6 +46,6 @@ void genMatrix(std::size_t n, int quantity) {
 }
 
 int main(){
-    genMatrix(2048,3);
+    genMatrix(2048,20);
     return 0;
 }
