@@ -1,9 +1,9 @@
-#include "matrix.cpp"
+#include "matrix.hpp"
 #include <chrono>
 #include <iostream>
 int main(){
-    std::size_t size = 512;
-    Matrix<double> m(size, size);
+    std::size_t size = 1024;
+    Matrix<int> m(size, size);
 
     for (std::size_t i = 0; i < size; i++) {
         m(i,i) = i;
@@ -14,7 +14,7 @@ int main(){
     std::chrono::duration<double, std::nano> elapsed_time = end_time - begin_time;
 
     begin_time = std::chrono::high_resolution_clock::now();
-    Matrix result =  m.StrassenMultiply(m);
+    Matrix result =  m.StrassenMultiply(m); //Strassen puro
     end_time = std::chrono::high_resolution_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time);
 

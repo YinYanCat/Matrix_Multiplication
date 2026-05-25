@@ -18,7 +18,8 @@
 #include <vector>
 
 #include "utils.cpp"
-#include "matrix.cpp"
+#include "matrix.hpp"
+#include "generate.cpp"
 
 // Include to be tested files here
 
@@ -57,6 +58,8 @@ int main(int argc, char *argv[])
         time_stdev = 0;
 
         // Test configuration goes here
+        Matrix<int> m1 = genIntMatrix(1<<n);
+        Matrix<int> m2 = genIntMatrix(1<<n);
 
         // Run to compute elapsed time
         for (i = 0; i < runs; i++) {
@@ -65,8 +68,7 @@ int main(int argc, char *argv[])
 
             begin_time = std::chrono::high_resolution_clock::now();
             
-            
-
+            m1.StrassenMultiply(m2);
 
             end_time = std::chrono::high_resolution_clock::now();
 
