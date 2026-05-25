@@ -19,7 +19,6 @@
 
 #include "utils.cpp"
 #include "matrix.cpp"
-#include "generate.cpp"
 
 // Include to be tested files here
 

@@ -179,11 +179,12 @@ class Matrix {
         if (a.cols() != b.rows()) {
             throw std::runtime_error("Invalid operation, the given matrices can't be multiplied.");
         }
-        std::size_t a_r = a.cols();
+        std::size_t a_r = a.rows();
         std::size_t a_c = a.cols();
         std::size_t b_c = b.cols();
         for (std::size_t i = 0; i < a_r; i++) {
             for (std::size_t j = 0; j < b_c; j++) {
+                c[i * b_c + j] = 0;
                 for (std::size_t k = 0; k < a_c; k++) {
                     c[i * b_c + j] += a(i,k) * b(k,j);
                 }
