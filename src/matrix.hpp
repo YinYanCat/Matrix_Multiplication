@@ -198,7 +198,10 @@ class Matrix {
 
         std::size_t n = a.rows();
 
-        if (n < until_size) {
+        // Por motivos de mejor identificación del punto de cruce, preferí cambiar la definición de lo pedido 
+        // (Divide & Conquer sólo si n ≥ n0, o Clasico solo si n < n0)
+        // a Divide & Conquer solo si n > n0, o Clasico solo si n <= n0
+        if (n <= until_size) {  
             Naive(a, b, c);
             return;
         }

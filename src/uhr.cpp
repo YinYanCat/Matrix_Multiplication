@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 
             begin_time = std::chrono::high_resolution_clock::now();
             
-            m1.StrassenMultiply(m2);
+            m1.StrassenMultiply(m2,16);
 
             end_time = std::chrono::high_resolution_clock::now();
 
